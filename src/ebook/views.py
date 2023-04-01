@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views import View
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import EbookModel, CategoryModel
 from django.core.cache import cache
@@ -15,22 +16,24 @@ from django.http.response import HttpResponse
 
 
 def home(request):
-    context = {}
-    results = []
-    ebooks = EbookModel.objects.all()
-    if ebooks.count() > 5:
-        popular_ebooks = ebooks.order_by('views_count')[:5]
-        context['popular_ebooks'] = popular_ebooks.values('title', 'slug', 'cover_image')
+    context = cache.get('context')
+    if not context:
+        context = {}
+        results = []
+        ebooks = EbookModel.objects.all()
+        if ebooks.count() > 5:
+            popular_ebooks = ebooks.order_by('views_count')[:5]
+            context['popular_ebooks'] = popular_ebooks.values('title', 'slug', 'cover_image')
 
-    categories = CategoryModel.objects.filter(parent=None)[:5]
-    for category in categories:
-        result = category.ebooks.all()
-        if result.count() >= 5:
-            results.append({category: [result[:5].values('title', 'slug', 'cover_image')]})
-        else:
-            pass
-    context['results'] = results
-
+        categories = CategoryModel.objects.filter(parent=None)[:5]
+        for category in categories:
+            result = category.ebooks.all()
+            if result.count() >= 5:
+                results.append({category: [result[:5].values('title', 'slug', 'cover_image')]})
+            else:
+                pass
+        context['results'] = results
+        cache.set('context', context, timeout=60*60*24)
     return render(request, 'home.html', context)
 
 
@@ -79,7 +82,7 @@ class EbookDetailView(View):
             return redirect('home')
         return render(request, 'ebook_detail.html', {'ebook': ebook})
 
-
+@login_required
 def read_pdf(request):
     pdf_path = request.GET.get('pdf_path')
     if pdf_path:
@@ -87,7 +90,7 @@ def read_pdf(request):
     else:
         redirect('home')
 
-
+@login_required
 def download_file(request):
     pdf_path = request.GET.get('pdf_path')
     if pdf_path:
