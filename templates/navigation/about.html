@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="background-radial-gradient overflow-hidden">
+  <style>
+    .background-radial-gradient {
+      background-color: hsl(218, 41%, 15%);
+      background-image: radial-gradient(650px circle at 0% 0%,
+          hsl(218, 41%, 35%) 15%,
+          hsl(218, 41%, 30%) 35%,
+          hsl(218, 41%, 20%) 75%,
+          hsl(218, 41%, 19%) 80%,
+          transparent 100%),
+        radial-gradient(1250px circle at 100% 100%,
+          hsl(218, 41%, 45%) 15%,
+          hsl(218, 41%, 30%) 35%,
+          hsl(218, 41%, 20%) 75%,
+          hsl(218, 41%, 19%) 80%,
+          transparent 100%);
+    }
+
+    #radius-shape-1 {
+      height: 220px;
+      width: 220px;
+      top: -60px;
+      left: -130px;
+      background: radial-gradient(#44006b, #ad1fff);
+      overflow: hidden;
+    }
+
+    #radius-shape-2 {
+      border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%;
+      bottom: -60px;
+      right: -110px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(#44006b, #ad1fff);
+      overflow: hidden;
+    }
+
+    .bg-glass {
+      background-color: hsla(0, 0%, 100%, 0.9) !important;
+      backdrop-filter: saturate(200%) blur(25px);
+    }
+  </style>
+
+  <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+    <div class="row gx-lg-5 align-items-center mb-5">
+      <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
+        <h1 class="my-5 display-5 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
+          Free open source <br />
+          <span style="color: hsl(218, 81%, 75%)">Ebooks</span>
+        </h1>
+        <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%)">
+          EbookOcean is an online library with free open source books that is freely available to transfer between parties, and that is not restricted under copyright laws.
+            On this website, you will be
+        able to read and download free open source books
+        in available categories. You will also be able to search for the book you need on this website and save it to
+        your profile for later reading.
+        </p>
+      </div>
+
+      <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+        <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+        <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<dev class="container p-5 mb-4 col-5" style="line-height:1.9;color:#4a4c54;">
+
+    <br>
+
+    <p style="font-size:20px;">The main goals of the website:</p>
+    <ul style="font-size:18px;">
+        <li>
+            Save trees by reading an ebook instead of reading physical books. Indeed, this is a truly eco-friendly
+            option,
+            and not only because of trees. Electronic books make a significant contribution to lowering the
+            environmental impact of publishing houses,
+            and printing industry. And the more people would switch to the eBook, the more benefits for nature it would
+            bring.
+        </li>
+        <li>Provide free open source books whenever possible for people who cannot afford to buy physical books or
+            ebooks
+        </li>
+        <li>Provide unlimited access to books. Probably, anyone can think of a time when they desperately needed a
+            concrete book and were not able to find it in bookstores or libraries.
+            With eBooks, you can find and download any book you need in a couple of seconds regardless of geographical
+            location or country of origin.
+            The electronic format has opened the door to the global book collection without any limitations.
+        </li>
+    </ul>
+</dev>
+
+{% include 'footer/footer.html' %}
+{% endblock %}

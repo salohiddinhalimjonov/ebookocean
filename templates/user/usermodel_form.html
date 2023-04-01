@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="container" style="margin-top:200px">
+    <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-md-8 col-lg-7 col-xl-6">
+            <img src="/static/draw2.jpg"
+                 class="img-fluid" alt="Phone image">
+        </div>
+        <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+
+            {% if form.errors %}
+            {% for field in form %}
+
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+                {{field.label}}: {{ error|escape }}
+            </div>
+            {% endfor %}
+
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <!-- Security token -->
+                {% csrf_token %}
+
+                <!-- Using the formset -->
+
+                {% for field in form.visible_fields %}
+                <div class="form-group mb-4">
+                    {% if field == form.birthday %}
+                    <p style="color:grey;">{{ field.label }}</p>
+                    {% render_field field class="form-control form-control-lg" placeholder="yyyy-mm-dd" %}
+                    {% else %}
+                    <p style="color:grey;">{{ field.label }}</p>
+                    {% render_field field class="form-control form-control-lg" %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block col-12">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

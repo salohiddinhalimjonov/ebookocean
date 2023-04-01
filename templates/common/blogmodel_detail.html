@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5 mb-5 col-5" style="color:#4a4c54;font-size:18px;line-height:1.8">
+    <h3>{{ object.title }}</h3> <br>
+    <i style="color:grey;">{{ object.created_at }}</i>
+    <p>{{ object.description | safe }}</p>
+</div>
+{% include 'footer/footer.html' %}
+{% endblock %}

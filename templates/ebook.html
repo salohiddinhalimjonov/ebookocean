@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="container" style="margin-bottom:100px;">
+    <div class="row justify-content-md-center">
+        <div class="col-3 mt-5">
+            <form method="get">
+                <h3 class="mb-4" style="color:#4a4c54;">Genre</h3>
+                <ul class="navbar-nav mb-2 mb-lg-0" style="overflow-y: scroll; max-height:600px;">
+                    {% for result in results %}
+                    <li class="nav-item mb-4 ms-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{ result.id }}"
+                                   id="{{ result.id }}" name="categories">
+                            <label style="color:#4a4c54;" class="form-check-label" for="{{ result.id }}">{{ result.title }}</label>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <button class=" btn btn-primary col-11 mt-4 " type="submit">Filter</button>
+            </form>
+        </div>
+
+        <div class="col-9 mt-5">
+            <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+                {% if ebooks %}
+                {% for ebook in ebooks %}
+                <div class="col ms-4 mt-2"><a style="text-decoration:none;" href="{% url 'ebook_detail' ebook.slug %}"><img style="width:100%; height:165px;"
+                                                src="/web_images/{{ ebook.cover_image }}"/>
+                    <h5 class="card-title mt-3" style="color:#4a4c54;">{{ ebook.title }}</h5></a></div>
+                {% endfor %}
+                {% else %}
+                <div class="container d-flex align-items-center justify-content-center  col-4" style="color:#4a4c54;padding-top:200px;">
+                    <h1><i class="bi bi-search"></i>
+                        No Results</h1>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-3" style="padding-right:110px;">
+        <ul class="pagination pagination-lg">
+            {% if ebooks.has_previous %}
+            <li class="page-item "><a class="page-link" href="?{% param_replace page=ebooks.previous_page_number %}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Previous</a>
+            </li>
+            {% endif %}
+            {% if ebooks.number %}
+            <li class="page-item disabled"><a class="page-link" href="#">{{ ebooks.number }}</a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">0</a></li>
+            {% endif %}
+            {% if ebooks.has_next %}
+            <li class="page-item"><a class="page-link" href="?{% param_replace page=ebooks.next_page_number %}">Next</a></li>
+            {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+            {% endif %}
+        </ul>
+        </div>
+    </div>
+</div>
+{% include 'footer/footer.html' %}
+{% endblock %}
