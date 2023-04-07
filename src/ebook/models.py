@@ -22,6 +22,8 @@ class EbookModel(BaseModel):
     views_count = models.PositiveIntegerField(default=0)
     downloads_count = models.PositiveIntegerField(default=0)
     published_year = models.DateField(null=True, blank=True)
+    price = models.DecimalField(max_digits=21, decimal_places=2, null=True, blank=True)
+    is_free = models.BooleanField(default=True)
     cover_image = models.ImageField(upload_to='images/ebook/Ebook/', null=True, blank=True)
     file = models.FileField(upload_to='files/ebook/Ebook/', null=True, blank=True)
     pages = models.PositiveIntegerField(default=0)

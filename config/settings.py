@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "src.common",
     "src.user",
     "src.ebook",
+    "src.order"
 ]
 
 MIDDLEWARE = [

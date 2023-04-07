@@ -35,3 +35,10 @@ class AddEbookModel(BaseModel):
 
     def __str__(self):
         return self.ebook_title
+
+
+class CommentModel(BaseModel):
+    user = models.ForeignKey('user.UserModel', on_delete=models.SET_NULL, null=True)
+    ebook = models.ForeignKey('ebook.EbookModel', on_delete=models.CASCADE)
+    description = models.TextField()
+    rate = models.IntegerField(null=True, blank=True)
