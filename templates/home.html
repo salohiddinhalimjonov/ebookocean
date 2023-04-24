@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<img style="width:100%; height:auto;" class="background-image mb-5" src="/static/background1.jpg">
+<img style="width:100%; height:auto;" class="background-image mb-5" src="/static/image.jpg">
 <div class="container">
 <h3 style="color:#4a4c54;"><strong>Popular Ebooks</strong></h3><a class="d-flex justify-content-end" href="{% url 'filter_ebook' %}?is_popular=True">(view all)</a></div>
     <div class="container mb-5 mt-3">
         <div class="row">
     {% for z in popular_ebooks %}
+            {% if z.is_free %}
             <div class="col ms-4"><a style="text-decoration:none;" href="{% url 'ebook_detail' z.slug %}"><img style="width:100%; height:250px;" src="/web_images/{{ z.cover_image }}"/>
-                <h5 class="card-title mt-3" style="color:#4a4c54;">{{ z.title }}</h5></a></div>
+                <h5 class="card-title mt-3" style="color:#4a4c54;">{{ z.title }} <p style="color:green;">Free</p></h5></a></div>
+            {% else %}
+            <div class="col ms-4"><a style="text-decoration:none;" href="{% url 'ebook_detail' z.slug %}"><img style="width:100%; height:250px;" src="/web_images/{{ z.cover_image }}"/>
+                <h5 class="card-title mt-3" style="color:#4a4c54;">{{ z.title }} <p style="color:red;">${{ z.price }}</p></h5></a></div>
+            {% endif %}
         {% endfor %}
             </div>
     </div>
@@ -22,8 +27,13 @@
     <div class="container mb-5 mt-3">
         <div class="row">
     {% for z in ebook %}
+            {% if z.is_free %}
             <div class="col ms-4"><a style="text-decoration:none;" href="{% url 'ebook_detail' z.slug %}"><img style="width:100%; height:250px;" src="/web_images/{{ z.cover_image }}"/>
-                <h5 class="card-title mt-3" style="color:#4a4c54;">{{ z.title }}</h5></a></div>
+                <h5 class="card-title mt-3" style="color:#4a4c54;">{{ z.title }}<p style="color:green;">Free</p></h5></a></div>
+            {% else %}
+            <div class="col ms-4"><a style="text-decoration:none;" href="{% url 'ebook_detail' z.slug %}"><img style="width:100%; height:250px;" src="/web_images/{{ z.cover_image }}"/>
+                <h5 class="card-title mt-3" style="color:#4a4c54;">{{ z.title }}<p style="color:red;">${{ z.price }}</p></h5></a></div>
+            {% endif %}
         {% endfor %}
             </div>
         {% endfor %}

@@ -29,7 +29,9 @@
                         <li>
                             <a class="dropdown-item" href="{% url 'filter_ebook' %}?browse=Economics">Economics</a>
                         </li>
-
+                        <li>
+                            <a class="dropdown-item" href="{% url 'filter_ebook' %}?browse=True">Free Ebooks</a>
+                        </li>
                     </ul>
                 <li class="nav-item ms-5 me-2">
                     <a class="nav-link active" href="{% url 'blog' %}">Blog</a>
@@ -54,6 +56,9 @@
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                         <li>
                             <a class="dropdown-item" href="{% url 'profile' request.user.guid %}">My account</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'order:my_ebooks' %}">My Ebooks</a>
                         </li>
 
                         <li>

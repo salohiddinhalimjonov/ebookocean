@@ -8,6 +8,9 @@ from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Import mimetypes module
 from django.http import FileResponse
+from src.common.models import CommentModel
+from src.common.forms import CommentForm
+from src.order.models import Order
 import mimetypes
 # import os module
 import os
@@ -16,37 +19,41 @@ from django.http.response import HttpResponse
 
 
 def home(request):
-    context = cache.get('context')
-    if not context:
-        context = {}
-        results = []
-        ebooks = EbookModel.objects.all()
-        if ebooks.count() > 5:
-            popular_ebooks = ebooks.order_by('views_count')[:5]
-            context['popular_ebooks'] = popular_ebooks.values('title', 'slug', 'cover_image')
+    # context = cache.get('context')
+    # if not context:
+    context = {}
+    results = []
+    ebooks = EbookModel.objects.all()
+    if ebooks.count() > 5:
+        popular_ebooks = ebooks.order_by('views_count')[:5]
+        context['popular_ebooks'] = popular_ebooks.values('title', 'slug', 'cover_image', 'price', 'is_free')
 
-        categories = CategoryModel.objects.filter(parent=None)[:5]
-        for category in categories:
-            result = category.ebooks.all()
-            if result.count() >= 5:
-                results.append({category: [result[:5].values('title', 'slug', 'cover_image')]})
-            else:
-                pass
-        context['results'] = results
-        cache.set('context', context, timeout=60*60*24)
+    categories = CategoryModel.objects.filter(parent=None)[:5]
+    for category in categories:
+        result = category.ebooks.all()
+        if result.count() >= 5:
+            results.append({category: [result[:5].values('title', 'slug', 'cover_image', 'price', 'is_free')]})
+        else:
+            pass
+    context['results'] = results
+    # cache.set('context', context, timeout=60*60)
     return render(request, 'home.html', context)
 
 
 def filter_ebook_view(request):
     ebooks = None
+    new_ones=None
     context = {'ebooks': ebooks}
     is_popular = request.GET.get('is_popular')
     if is_popular == 'True':
         ebooks = EbookModel.objects.all()
-        ebooks = ebooks.order_by('views_count')[:12]
+        ebooks = ebooks.order_by('views_count')[:15]
     browse = request.GET.get('browse')
     if browse:
-        new_ones = CategoryModel.objects.filter(title__icontains=browse)
+        if browse=='True':
+            ebooks = EbookModel.objects.filter(is_free=True)
+        else:
+            new_ones = CategoryModel.objects.filter(title__icontains=browse)
         if new_ones:
             first_one = new_ones.first()
             ebooks = first_one.ebooks.all()
@@ -57,7 +64,10 @@ def filter_ebook_view(request):
         ebooks = EbookModel.objects.filter(Q(title__icontains=search) | Q(authors__icontains=search))
     categories = request.GET.getlist('categories')
     if categories:
-        ebooks = EbookModel.objects.filter(category__id__in=categories).order_by('title').distinct('title')
+        ebooks = EbookModel.objects.all()
+        for category in categories:
+            ebooks = ebooks.filter(category__id=category)
+        ebooks = ebooks.order_by('title').distinct('title')
     if ebooks:
         page_number = request.GET.get('page', 1)
         paginator = Paginator(ebooks, 12)
@@ -75,18 +85,48 @@ class EbookDetailView(View):
 
     def get(self, request, *args, **kwargs):
         slug = self.kwargs.get('slug')
-        print(slug)
+        form = CommentForm()
         try:
             ebook = EbookModel.objects.get(slug=slug)
         except EbookModel.DoesNotExist:
             return redirect('home')
-        return render(request, 'ebook_detail.html', {'ebook': ebook})
+        comments = CommentModel.objects.filter(ebook=ebook).order_by("-created_at")[:10]
+        is_bought = False
+        if request.user:
+            order = Order.objects.filter(user=request.user, ebook=ebook)
+            if order:
+                is_bought = True
+        context = {'ebook': ebook, 'comments': comments, 'form': form, 'is_bought': is_bought}
+        return render(request, 'ebook_detail.html', context)
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('sign_in')
+        slug = self.kwargs.get('slug')
+        try:
+            ebook = EbookModel.objects.get(slug=slug)
+        except EbookModel.DoesNotExist:
+            return redirect('home')
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data.get('description')
+            CommentModel.objects.create(user=request.user, ebook=ebook, description=description)
+            return redirect('ebook_detail', slug=ebook.slug)
+
 
 @login_required
 def read_pdf(request):
     pdf_path = request.GET.get('pdf_path')
     if pdf_path:
         return render(request, 'read_online.html', {'pdf_path': pdf_path})
+    else:
+        redirect('home')
+
+@login_required
+def read_sale_pdf(request):
+    pdf_path = request.GET.get('pdf_path')
+    if pdf_path:
+        return render(request, 'read_sale_online.html', {'pdf_path': pdf_path})
     else:
         redirect('home')
 

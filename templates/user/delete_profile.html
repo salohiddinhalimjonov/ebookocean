@@ -12,9 +12,9 @@
                     {% csrf_token %}
 
                         <button class="btn btn-outline-danger btn-lg btn-block col-4" , type="submit">Delete</button>
-                        <button class="btn btn-info btn-lg btn-block col-4" style="margin-left:20px;"><a
-                                style="text-decoration:none; list-style-type:none;color:white;" href="{% url 'profile' user.guid %}">Cancel</a>
-                        </button>
+                        <a class="btn btn-info btn-lg btn-block col-4" style="margin-left:20px; text-decoration:none; list-style-type:none;color:white;"
+                                 href="{% url 'profile' user.guid %}">Cancel</a>
+
                 </form>
             </div>
             </div>

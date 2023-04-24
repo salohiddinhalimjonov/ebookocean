@@ -26,19 +26,26 @@
             <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
                 {% if ebooks %}
                 {% for ebook in ebooks %}
-                <div class="col ms-4 mt-2"><a style="text-decoration:none;" href="{% url 'ebook_detail' ebook.slug %}"><img style="width:100%; height:165px;"
+                {% if ebook.is_free %}
+                <div class="col ms-4 mt-2"><a style="text-decoration:none;" href="{% url 'ebook_detail' ebook.slug %}"><img style="width:100%; height:200px;"
                                                 src="/web_images/{{ ebook.cover_image }}"/>
-                    <h5 class="card-title mt-3" style="color:#4a4c54;">{{ ebook.title }}</h5></a></div>
+                    <h5 class="card-title mt-3" style="color:#4a4c54;">{{ ebook.title }} <p style="color:green;">Free</p></h5> </a></div>
+                {% else %}
+                <div class="col ms-4 mt-2"><a style="text-decoration:none;" href="{% url 'ebook_detail' ebook.slug %}"><img style="width:100%; height:200px;"
+                                                src="/web_images/{{ ebook.cover_image }}"/>
+                    <h5 class="card-title mt-3" style="color:#4a4c54;">{{ ebook.title }} <p style="color:red;">${{ ebook.price }} </p></h5> </a></div>
+                {% endif %}
                 {% endfor %}
                 {% else %}
-                <div class="container d-flex align-items-center justify-content-center  col-4" style="color:#4a4c54;padding-top:200px;">
+                <div class="container d-flex align-items-center justify-content-center  col-4" style="color:#4a4c54;padding-top:200px;padding-bottom:100px;">
                     <h1><i class="bi bi-search"></i>
                         No Results</h1>
                 </div>
                 {% endif %}
             </div>
         </div>
-        <div class="d-flex justify-content-end mt-3" style="padding-right:110px;">
+        {% if ebooks %}
+        <div class="d-flex justify-content-center mt-3" >
         <ul class="pagination pagination-lg">
             {% if ebooks.has_previous %}
             <li class="page-item "><a class="page-link" href="?{% param_replace page=ebooks.previous_page_number %}">Previous</a>
@@ -59,6 +66,8 @@
             {% endif %}
         </ul>
         </div>
+        {% else %}
+        {% endif %}
     </div>
 </div>
 {% include 'footer/footer.html' %}

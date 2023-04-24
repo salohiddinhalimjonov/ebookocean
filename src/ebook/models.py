@@ -23,12 +23,13 @@ class EbookModel(BaseModel):
     downloads_count = models.PositiveIntegerField(default=0)
     published_year = models.DateField(null=True, blank=True)
     price = models.DecimalField(max_digits=21, decimal_places=2, null=True, blank=True)
-    is_free = models.BooleanField(default=True)
-    cover_image = models.ImageField(upload_to='images/ebook/Ebook/', null=True, blank=True)
-    file = models.FileField(upload_to='files/ebook/Ebook/', null=True, blank=True)
+    is_free = models.BooleanField(default=False)
+    cover_image = models.ImageField(upload_to='images/ebook/Ebook/')
+    file = models.FileField(upload_to='files/ebook/Ebook/')
     pages = models.PositiveIntegerField(default=0)
     slug = models.SlugField(null=True, blank=True, unique=True)
     category = models.ManyToManyField(CategoryModel, related_name='ebooks')
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -37,6 +38,8 @@ class EbookModel(BaseModel):
         if media:
             if media.size > settings.IMAGE_SIZE_TO_COMPRESS:
                 self.media = compress_image(media)
+        if self.is_free is True:
+            self.price = 0
         super(EbookModel, self).save(*args, **kwargs)
 
     def __str__(self):

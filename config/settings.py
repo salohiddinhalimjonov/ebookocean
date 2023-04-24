@@ -27,7 +27,7 @@ environ.Env.read_env(".env")
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -61,7 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+   # "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -185,12 +185,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR/'static']
 MEDIA_URL = "/web_images/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "web_images")
-STORAGES = {
-    # ...
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# STORAGES = {
+#     # ...
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 SITE_ID = 2
@@ -203,7 +203,11 @@ LOGIN_URL = '/sign-in/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "user.UserModel"
 IMAGE_SIZE_TO_COMPRESS = 1024 * 1024
-
+STRIPE_PUBLISHABLE_KEY=env('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY=env('STRIPE_SECRET_KEY')
+BACKEND_DOMAIN="http://127.0.0.1:8000"
+PAYMENT_SUCCESS_URL="http://127.0.0.1:8000/my-ebooks/"
+PAYMENT_CANCEL_URL="http://127.0.0.1:8000/cancel/"
 JAZZMIN_SETTINGS = {
     "site_title": "EbookOcean Admin",
     "site_header": "EbookOcean",
